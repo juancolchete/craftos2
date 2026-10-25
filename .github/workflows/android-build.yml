@@ -11,6 +11,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
+    # Tells all steps to run inside your specific Android folder
     defaults:
       run:
         working-directory: resources/android-project
@@ -30,18 +31,23 @@ jobs:
       - name: Setup Compatible Gradle Version
         uses: gradle/actions/setup-gradle@v3
         with:
+          # Forces the runner to use Gradle 7.6.3 to prevent jcenter() 
+          # and configuration-time crashes with the older Android plugin.
           gradle-version: '7.6.3' 
 
       - name: Remove Incompatible Modern SDKs
-        # Old AGP versions crash when their XML parser scans API 34+ packages.
-        # Deleting them from the runner forces AGP to only scan older, compatible SDKs.
+        # Deletes API 34, 35, and 36 from the CI runner so the older 
+        # Gradle plugin scanner doesn't crash on the new XML schemas.
         run: |
           rm -rf $ANDROID_HOME/platforms/android-34*
           rm -rf $ANDROID_HOME/platforms/android-35*
+          rm -rf $ANDROID_HOME/platforms/android-36*
           rm -rf $ANDROID_HOME/build-tools/34.*
           rm -rf $ANDROID_HOME/build-tools/35.*
+          rm -rf $ANDROID_HOME/build-tools/36.*
 
       - name: Generate Missing Gradle Wrapper
+        # Dynamically creates gradlew and gradle-wrapper.jar on the CI server
         run: gradle wrapper
 
       - name: Make Gradle Wrapper Executable
