@@ -11,7 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-    # This tells GitHub to run all steps inside your Android folder
     defaults:
       run:
         working-directory: resources/android-project
@@ -29,6 +28,11 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      - name: Generate Missing Gradle Wrapper
+        # This uses the CI server's system Gradle to generate the gradlew script 
+        # and the missing .jar file dynamically so you don't have to commit them.
+        run: gradle wrapper
+
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
 
@@ -39,7 +43,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: craftos-pc-debug-apk
-          # The path must also include the subfolder to find the APK
           path: resources/android-project/app/build/outputs/apk/debug/*.apk
           retention-days: 14
-          
