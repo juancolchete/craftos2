@@ -28,9 +28,12 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
+      - name: Patch JCenter to MavenCentral
+        # Dynamically replaces jcenter() with mavenCentral() in all gradle files
+        run: |
+          find . -type f -name "*.gradle" -exec sed -i 's/jcenter()/mavenCentral()/g' {} +
+
       - name: Generate Missing Gradle Wrapper
-        # This uses the CI server's system Gradle to generate the gradlew script 
-        # and the missing .jar file dynamically so you don't have to commit them.
         run: gradle wrapper
 
       - name: Make Gradle Wrapper Executable
