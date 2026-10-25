@@ -70,7 +70,7 @@ public class LaunchActivity extends Activity {
     }
 
     private void startCraftOS() {
-        Intent intent = new Intent(this, org.libsdl.app.SDLActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION); // Prevents a flashing screen transition
         startActivity(intent);
         finish(); 
