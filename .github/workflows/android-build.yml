@@ -53,6 +53,14 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
 
+      - name: Fetch Prebuilt Native Libraries (jniLibs)
+        run: |
+          mkdir -p app/src/main/jniLibs
+          curl -sL https://github.com/MCJack123/craftos2/releases/download/v2.8.3/CraftOS-PC.apk -o /tmp/official.apk
+          unzip -q /tmp/official.apk 'lib/*' -d /tmp/apk_libs
+          cp -r /tmp/apk_libs/lib/* app/src/main/jniLibs/
+          rm -rf /tmp/official.apk /tmp/apk_libs
+
       - name: Build Debug APK
         run: ./gradlew assembleDebug --stacktrace
 
