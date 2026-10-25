@@ -42,3 +42,4 @@ jobs:
           # The path must also include the subfolder to find the APK
           path: resources/android-project/app/build/outputs/apk/debug/*.apk
           retention-days: 14
+          
