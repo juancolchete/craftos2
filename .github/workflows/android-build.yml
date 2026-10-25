@@ -1,4 +1,4 @@
-name: Android Release Build
+name: Android APK Build
 
 on:
   push:
@@ -10,6 +10,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # This tells GitHub to run all steps inside your Android folder
+    defaults:
+      run:
+        working-directory: resources/android-project
 
     steps:
       - name: Checkout Repository
@@ -27,23 +32,13 @@ jobs:
       - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
 
-      - name: Build Release APK
-        # This compiles the optimized, stripped C++ binaries and the release Java code
-        run: ./gradlew assembleRelease --stacktrace
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
 
-      - name: Sign Release APK
-        uses: r0adkll/sign-android-release@v1
-        id: sign_app
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
-          alias: ${{ secrets.ALIAS }}
-          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Upload Signed APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: craftos-pc-release-apk
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          name: craftos-pc-debug-apk
+          # The path must also include the subfolder to find the APK
+          path: resources/android-project/app/build/outputs/apk/debug/*.apk
           retention-days: 14
