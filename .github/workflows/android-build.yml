@@ -34,8 +34,17 @@ jobs:
 
       - name: Remove Incompatible Modern SDKs
         run: |
+          # Remove platforms and build-tools
           rm -rf $ANDROID_HOME/platforms/android-3[4-9]*
-          rm -rf $ANDROID_HOME/build-tools/3[4-9].*
+          rm -rf $ANDROID_HOME/build-tools/3[4-9]*
+          
+          # Remove system-images (This is what caused the latest crash)
+          rm -rf $ANDROID_HOME/system-images/android-3[4-9]*
+          
+          # Remove modern sources and addons just to be safe
+          rm -rf $ANDROID_HOME/sources/android-3[4-9]*
+          rm -rf $ANDROID_HOME/add-ons/addon-google_apis-google-3[4-9]*
+
 
       - name: Generate Missing Gradle Wrapper
         run: gradle wrapper
